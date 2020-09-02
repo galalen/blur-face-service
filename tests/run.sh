@@ -1,0 +1,1 @@
+ab -c 100 -n 1000 -p data.json -T application/json http://localhost:8000/api/blur/encoded

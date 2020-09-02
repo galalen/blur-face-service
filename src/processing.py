@@ -1,11 +1,14 @@
 import numpy as np
-import time
 import cv2
+import os
 
 
-face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+DIR = os.path.dirname(os.path.abspath(__file__))
+classifier_config = os.path.join(DIR, 'haarcascade_frontalface_default.xml')
 
-async def blur_face(image, mask=None):
+face_cascade = cv2.CascadeClassifier(classifier_config)
+
+def blur_face(image, mask=None):
 	"""
 		Given an image with face 
 		will return output image with face blured

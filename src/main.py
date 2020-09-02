@@ -1,16 +1,24 @@
+import os
 import cv2
 import base64
 import numpy as np
-from fastapi import FastAPI, File, UploadFile, Form
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import StreamingResponse
-from fastapi.templating import Jinja2Templates
+from fastapi import FastAPI, File, UploadFile, Request
+from fastapi.responses import HTMLResponse
+from pydantic import BaseModel
 
-from bluring import blur_face
+from .processing import blur_face
 
+DIR = os.path.dirname(os.path.abspath(__file__))
 
 app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/")
+async def index(request: Request):
+    template = os.path.join(DIR, 'templates/index.html')
+    with open(template, 'r') as file:
+        html = file.read()
+    return HTMLResponse(html)
+
 
 @app.post("/api/blur")
 async def handle_blur(image: UploadFile = File(...)):
@@ -22,8 +30,32 @@ async def handle_blur(image: UploadFile = File(...)):
     np_arr = np.fromstring(content, np.uint8)
     img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
 
-    output = await blur_face(img)
-    res, im_png = cv2.imencode(".png", output)
+    output = blur_face(img)
+    res, im_jpeg = cv2.imencode(".jpeg", output)
 
-    encoded_img = base64.b64encode(im_png.tobytes())
+    encoded_img = base64.b64encode(im_jpeg.tobytes())
+    return {"data": encoded_img}
+
+
+# Post an encoded image (base64)
+class Item(BaseModel):
+    image: str
+
+@app.post("/api/blur/encoded")
+async def handle_blur(item: Item):
+    if not item.image:
+        return {"error": "image not provided"}
+    
+    image = item.image
+
+    if image.startswith("data:image"):
+        image = item.image.split("base64,")[1]
+
+    decode_image = base64.b64decode(image)
+    np_arr = np.fromstring(decode_image, np.uint8)
+    img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+    output = blur_face(img)
+    res, im_jpeg = cv2.imencode(".jpeg", output)
+
+    encoded_img = base64.b64encode(im_jpeg.tobytes())
     return {"data": encoded_img}
