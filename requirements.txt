@@ -6,7 +6,6 @@ httptools==0.1.1
 MarkupSafe==1.1.1
 numpy==1.19.1
 opencv-contrib-python==4.4.0.42
-orjson==3.3.1
 Pillow==7.2.0
 pydantic==1.6.1
 python-multipart==0.0.5
