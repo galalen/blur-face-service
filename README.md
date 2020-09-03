@@ -1,6 +1,6 @@
 # Blur-Face Service
 #### ~~Be Anonymous~~
- Test FastAPI async/await with computation expensive operation (Detecting faces and blurring)
+Test FastAPI async/await with computation expensive operation (Detecting faces and blurring)  
 Tool used for the benchmarking: [Apache Benchmark](https://httpd.apache.org/docs/2.4/programs/ab.html)
 
 #### Test the API with Sync:
