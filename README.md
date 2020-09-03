@@ -87,9 +87,3 @@ Percentage of the requests served within a certain time (ms)
   99%  64088
  100%  64088 (longest request)
 ```
-
----
-#### Example:
-`curl -F "image=@path/to/image.png" https://blur-face.herokuapp.com/api/blur`
-
-#### Check the docs: [API DOCS](https://blur-face.herokuapp.com/docs)
